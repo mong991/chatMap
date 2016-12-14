@@ -1,10 +1,11 @@
 import { Actions } from 'react-native-router-flux';
-import { sendMessage } from '../services/Message';
+import { sendMessage, getMarkerList } from '../services/Message';
 
 const INITIAL_STATE = {
     messageText: '',
     error: '',
-    loading: false
+    loading: false,
+    markerData: ''
 };
 
 export default {
@@ -21,28 +22,41 @@ export default {
       return { ...state, loading: true, error: '' };
     },
     sendSuccess(state) {
-      return { ...state, ...INITIAL_STATE };
+      const markerData = state.markerData;
+      return { ...state, ...INITIAL_STATE, markerData };
     },
     sendFail(state) {
-      console.log('sendFail');
       return { ...state, error: 'Send Failed.', loading: false };
+    },
+    markerFetchSuccess(state, action) {
+      return { ...state, markerData: action.payload };
     }
   },
   effects: {
     * sendMessage({ payload }, { call, put }) {
         //yield put({ type: 'showLoading' });
 
-        const { user, err } = yield call(sendMessage, { message: payload });
+        const { user, err } = yield call(sendMessage, { ...payload });
 
         if (user) {
           yield put({ type: 'sendSuccess', payload: user });
         } else if (err) {
           yield put({ type: 'sendFail' });
         }
+    },
+    * privateChat({ payload }, { call, put }) {
+      //yield put({ type: 'showLoading' });
+
+      //const  data  = yield call(getMarkerList);
+      console.log(payload);
     }
 
   },
   subscriptions: {
-
+    setup({ dispatch }) {
+      getMarkerList((val) => {
+        dispatch({ type: 'markerFetchSuccess', payload: val });
+      });
+    }
   },
 };

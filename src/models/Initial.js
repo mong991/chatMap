@@ -18,10 +18,7 @@ export default {
   reducers: {
     regionChanged(state, action) {
       return { ...state, region: action.payload };
-    },
-    newRegion(state, action) {
-      return { ...state, newRegion: action.payload };
-    },
+    }
   },
   effects: {},
   subscriptions: {
@@ -37,16 +34,15 @@ export default {
 
       navigator.geolocation.getCurrentPosition(
           (position) => {
-            const region = {
+            const newRegion = {
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
                 latitudeDelta: 0.0922,
                 longitudeDelta: 0.0421
             };
-
             dispatch({
                 type: 'regionChanged',
-                payload: region
+                payload: newRegion
             });
           },
           (error) => alert(error.message),

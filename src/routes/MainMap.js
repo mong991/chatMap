@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { View, TextInput } from 'react-native';
+import { View, TextInput, Text } from 'react-native';
 import MapView from 'react-native-maps';
 import { connect } from 'dva/mobile';
 import { Button, Flex, List } from 'antd-mobile';
@@ -15,10 +15,48 @@ class MainMap extends Component {
   }
 
   onButtonPress() {
+    const { messageText } = this.props.message;
+    const { latitude, longitude } = this.props.region;
+    const latlon = { latitude, longitude };
+
     this.props.dispatch({
         type: 'message/sendMessage',
-        payload: this.props.message.messageText
+        payload: { messageText, latlon }
     });
+  }
+
+  onPressCallout(userId) {
+    this.props.dispatch({
+        type: 'message/privateChat',
+        payload: userId
+    });
+  }
+
+  renderMarker() {
+    const markerList = this.props.publish_chat.map((marker, index) => {
+       if (marker.latlon) {
+          return (
+            <MapView.Marker
+              key={index}
+              coordinate={marker.latlon}
+              title={`userId: ${marker.userId}`}
+              description={`message: ${marker.message}`}
+            >
+            <MapView.Callout
+              style={{ width: 160 }}
+              onPress={() => this.onPressCallout(marker.userId)}
+            >
+
+              <View>
+                <Text>{`userId: ${marker.userId}`}</Text>
+                <Text>{`message: ${marker.message}`}</Text>
+              </View>
+            </MapView.Callout>
+            </MapView.Marker>
+          );
+       }
+      });
+      return markerList;
   }
 
   // renderButton() {
@@ -42,11 +80,7 @@ class MainMap extends Component {
           initialRegion={this.props.region}
           showsUserLocation
         >
-        <MapView.Marker
-          coordinate={this.props.region}
-          title='{marker.title}'
-          description='{marker.description}'
-        />
+          {this.renderMarker()}
         </MapView>
 
         <View style={{ flex: 1 }}>
@@ -88,9 +122,12 @@ class MainMap extends Component {
   };
 
   const mapStateToProps = ({ message, Initial }) => {
+    const publish_chat = _.map(message.markerData, (data) => {
+      return { ...data };
+    });
+
     const { region } = Initial;
-    console.log(Initial);
-    return { message, region };
+    return { message, region, publish_chat };
   };
 
 export default connect(mapStateToProps)(MainMap);
