@@ -12,11 +12,15 @@ import dva from 'dva/mobile';
 
 import Router from './src/Router';
 
+import Initial from './src/models/Initial';
 import Auth from './src/models/Auth';
+import Message from './src/models/Message';
 
 const app = dva();
 
+app.model(Initial);
 app.model(Auth);
+app.model(Message);
 
 app.router(() => <Router />);
 

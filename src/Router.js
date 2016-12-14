@@ -3,6 +3,7 @@ import { Scene, Router } from 'react-native-router-flux';
 import { connect } from 'dva/mobile';
 import Auth from './routes/Auth';
 import MainMap from './routes/MainMap';
+import Splash from './components/Splash';
 
 const RouterComponent = ({ dispatch }) => {
     function onLogout() {
@@ -11,8 +12,18 @@ const RouterComponent = ({ dispatch }) => {
 
     return (
         <Router sceneStyle={{ paddingTop: 55 }}>
+
+            <Scene
+                key="splash"
+                component={Splash}
+                hideNavBar
+                passProps
+                splashText="Chat Map"
+                initial
+            />
+
             <Scene key="auth">
-                <Scene key="login" component={Auth} title="Please Login" initial />
+                <Scene key="login" component={Auth} title="Please Login" />
             </Scene>
             <Scene key="main">
                 <Scene
