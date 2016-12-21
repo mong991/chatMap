@@ -7,40 +7,6 @@ import { Button, Flex, List } from 'antd-mobile';
 
 class MainMap extends Component {
 
-  componentWillMount() {
-    navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const newRegion = {
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421
-          };
-          this.props.dispatch({
-              type: 'Initial/regionChanged',
-              payload: newRegion
-          });
-          console.log(newRegion);
-        },
-        (error) => alert(error.message),
-        { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-    );
-
-    this.watchID = navigator.geolocation.watchPosition((position) => {
-      const newRegion = {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      };
-      console.log(newRegion);
-      this.props.dispatch({
-            type: 'Initial/setLocation',
-            payload: newRegion
-      });
-    });
-  }
-
   onTextareaChange(text) {
     this.props.dispatch({
         type: 'Message/messageChanged',
@@ -68,8 +34,14 @@ class MainMap extends Component {
 
   onRegionChange(region) {
     this.props.dispatch({
-        type: 'Initial/regionChanged',
+        type: 'Message/regionChanged',
         payload: region
+    });
+  }
+
+  onPressLocation() {
+    this.props.dispatch({
+        type: 'Message/backUserLocation'
     });
   }
 
@@ -115,6 +87,12 @@ class MainMap extends Component {
     const { messageText } = this.props.message;
     return (
       <View style={{ flex: 1 }}>
+        <TouchableOpacity style={styles.iconBorder} onPress={this.onPressLocation.bind(this)}>
+          <Image
+            style={styles.icon}
+            source={require('../img/location.png')}
+          />
+        </TouchableOpacity>
         <MapView
           style={{ flex: 9 }}
           initialRegion={this.props.region}
@@ -176,14 +154,13 @@ class MainMap extends Component {
     }
   };
 
-  const mapStateToProps = ({ Message, Initial }) => {
+  const mapStateToProps = ({ Message }) => {
     const userMarker = _.map(Message.markerData, (data, key) => {
 
       return { ...data, userId: key };
     });
 
-    const { region } = Initial;
-    console.log(region);
+    const { region } = Message;
     const message = Message;
     return { message, region, userMarker };
   };

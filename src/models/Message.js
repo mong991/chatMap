@@ -10,6 +10,12 @@ const INITIAL_STATE = {
   error: '',
   loading: false,
   markerData: {},
+  region: {
+    latitude: 24.795258,
+    longitude: 120.996351,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421
+  }
 };
 
 export default {
@@ -34,7 +40,10 @@ export default {
     },
     markerFetchSuccess(state, action) {
       return { ...state, markerData: action.payload };
-    }
+    },
+    regionChanged(state, action) {
+      return { ...state, region: action.payload };
+    },
   },
   effects: {
     * sendMessage({ payload }, { call, put }) {
@@ -46,6 +55,10 @@ export default {
       } else if (err) {
         yield put({ type: 'sendFail' });
       }
+    },
+    * backUserLocation({ payload }, { select, put }) {
+      const region = yield select(state => state.Initial.geoRegion);
+      yield put({ type: 'regionChanged', payload: region });
     }
   },
   subscriptions: {

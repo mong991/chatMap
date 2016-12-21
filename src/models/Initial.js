@@ -9,12 +9,6 @@ const INITIAL_STATE = {
     longitude: 120.996351,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421
-  },
-  region: {
-    latitude: 24.795258,
-    longitude: 120.996351,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421
   }
 };
 
@@ -22,15 +16,15 @@ export default {
   namespace: 'Initial',
   state: { ...INITIAL_STATE },
   reducers: {
-    regionChanged(state, action) {
-      return { ...state, region: action.payload };
+    geoRegionChanged(state, action) {
+      return { ...state, geoRegion: action.payload };
     }
   },
   effects: {
     * setLocation({ payload }, { call, put }) {
         yield call(updateLocation, { ...payload });
         yield put({
-          type: 'regionChanged',
+          type: 'geoRegionChanged',
           payload
         });
     },
@@ -46,22 +40,22 @@ export default {
       };
       firebase.initializeApp(config);
 
-      // navigator.geolocation.getCurrentPosition(
-      //     (position) => {
-      //       const newRegion = {
-      //           latitude: position.coords.latitude,
-      //           longitude: position.coords.longitude,
-      //           latitudeDelta: 0.0922,
-      //           longitudeDelta: 0.0421
-      //       };
-      //       dispatch({
-      //           type: 'regionChanged',
-      //           payload: newRegion
-      //       });
-      //     },
-      //     (error) => alert(error.message),
-      //     { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-      // );
+      navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const newRegion = {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421
+            };
+            dispatch({
+                type: 'Message/regionChanged',
+                payload: newRegion
+            });
+          },
+          (error) => alert(error.message),
+          { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+      );
 
       firebase.auth().onAuthStateChanged((isLogin) => {
         if (isLogin) {
@@ -74,21 +68,21 @@ export default {
         }
       });
      },
-    //  geolocation({ dispatch }) {
-    //     this.watchID = navigator.geolocation.watchPosition((position) => {
-    //       const newRegion = {
-    //         latitude: position.coords.latitude,
-    //         longitude: position.coords.longitude,
-    //         latitudeDelta: 0.0922,
-    //         longitudeDelta: 0.0421
-    //       };
+     geolocation({ dispatch }) {
+        this.watchID = navigator.geolocation.watchPosition((position) => {
+          const newRegion = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421
+          };
 
-    //       dispatch({
-    //             type: 'setLocation',
-    //             payload: newRegion
-    //       });
-    //     });
-    // }
+          dispatch({
+                type: 'setLocation',
+                payload: newRegion
+          });
+        });
+    }
   }
 };
 
