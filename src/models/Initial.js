@@ -1,7 +1,7 @@
 import _ from 'lodash';
-
 import firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
+import { updateLocation } from '../services/Auth';
 
 const INITIAL_STATE = {
   region: {
@@ -20,7 +20,15 @@ export default {
       return { ...state, region: action.payload };
     }
   },
-  effects: {},
+  effects: {
+    * setLocation({ payload }, { call, put }) {
+        yield call(updateLocation, { ...payload });
+        yield put({
+          type: 'regionChanged',
+          payload: payload
+        });
+    },
+  },
   subscriptions: {
     setup({ dispatch }) {
       const config = {
@@ -67,7 +75,7 @@ export default {
           };
 
           dispatch({
-                type: 'regionChanged',
+                type: 'setLocation',
                 payload: newRegion
           });
         });

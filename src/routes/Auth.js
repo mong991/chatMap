@@ -2,37 +2,37 @@ import React from 'react';
 import { connect } from 'dva/mobile';
 import { Text, View } from 'react-native';
 import {
-   Button,
-   InputItem,
-   List,
-   WingBlank,
-   Card,
-   WhiteSpace,
-   ActivityIndicator
+  Button,
+  InputItem,
+  List,
+  WingBlank,
+  Card,
+  WhiteSpace,
+  ActivityIndicator
 } from 'antd-mobile';
 
 function Auth({ dispatch, auth }) {
   const { email, password, error, loading } = auth;
 
   function onEmailChange(text) {
-      dispatch({
-        type: 'auth/emailChanged',
-        payload: text
-      });
+    dispatch({
+      type: 'auth/emailChanged',
+      payload: text
+    });
   }
 
   function onPasswordChanged(text) {
     //this.props.passwordChanged(text);
     dispatch({
-        type: 'auth/passwordChanged',
-        payload: text
+      type: 'auth/passwordChanged',
+      payload: text
     });
   }
 
   function onButtonPress() {
     dispatch({
-        type: 'auth/loginUser',
-        payload: { email, password }
+      type: 'auth/loginUser',
+      payload: { email, password }
     });
   }
 
@@ -49,40 +49,40 @@ function Auth({ dispatch, auth }) {
   }
 
   return (
-      <View>
+    <View>
       <WhiteSpace size="lg" />
       <WingBlank>
-          <Card>
+        <Card>
           <List>
-          <InputItem
+            <InputItem
               labelNumber="5"
               placeholder="email@gmail.com"
               onChange={onEmailChange}
               value={email}
-          >
+            >
               Email
-          </InputItem>
+            </InputItem>
 
-          <InputItem
+            <InputItem
               labelNumber="5"
               type="password"
               placeholder="enter password"
               onChange={onPasswordChanged}
               value={password}
-          >
+            >
               Password
-          </InputItem>
+            </InputItem>
           </List>
 
           <View>
-          <Text style={styles.errorTextStyle}>
+            <Text style={styles.errorTextStyle}>
               {error}
-          </Text>
-          {renderButton()}
+            </Text>
+            {renderButton()}
           </View>
-          </Card>
+        </Card>
       </WingBlank>
-      </View>
+    </View>
   );
 }
 

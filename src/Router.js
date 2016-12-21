@@ -3,6 +3,7 @@ import { Scene, Router } from 'react-native-router-flux';
 import { connect } from 'dva/mobile';
 import Auth from './routes/Auth';
 import MainMap from './routes/MainMap';
+import Chating from './routes/Chating';
 import Splash from './components/Splash';
 
 const RouterComponent = ({ dispatch }) => {
@@ -32,6 +33,11 @@ const RouterComponent = ({ dispatch }) => {
                     rightTitle="Logout"
                     component={MainMap}
                     title="Chat Map"
+                />
+                <Scene
+                    key="chating"
+                    component={Chating}
+                    title=''
                 />
 
             </Scene>

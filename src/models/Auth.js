@@ -1,5 +1,6 @@
+import _ from 'lodash';
 import { Actions } from 'react-native-router-flux';
-import { signInWithEmailAndPassword, signOut } from '../services/auth';
+import { signInWithEmailAndPassword, signOut } from '../services/Auth';
 
 const INITIAL_STATE = {
     user: null,
@@ -35,9 +36,9 @@ export default {
   },
   effects: {
     * loginUser({ payload }, { call, put }) {
-        yield put({ type: 'showLoading' });
-        const { email, password } = payload;
-        const { user, err } = yield call(signInWithEmailAndPassword, email, password);
+      yield put({ type: 'showLoading' });
+      const { email, password } = payload;
+      const { user, err } = yield call(signInWithEmailAndPassword, email, password);
 
       if (user) {
         yield put({ type: 'loginSuccess', payload: user });

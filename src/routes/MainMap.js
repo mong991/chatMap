@@ -9,7 +9,7 @@ class MainMap extends Component {
 
   onTextareaChange(text) {
     this.props.dispatch({
-        type: 'message/messageChanged',
+        type: 'Message/messageChanged',
         payload: text
     });
   }
@@ -20,36 +20,37 @@ class MainMap extends Component {
     const latlon = { latitude, longitude };
 
     this.props.dispatch({
-        type: 'message/sendMessage',
+        type: 'Message/sendMessage',
         payload: { messageText, latlon }
     });
   }
 
-  onPressCallout(userId) {
+  onPressCallout(userId, userName) {
+    console.log('onPressCallout');
     this.props.dispatch({
-        type: 'message/privateChat',
-        payload: userId
+        type: 'Chat/privateChat',
+        payload: { userId, userName }
     });
   }
 
   renderMarker() {
-    const markerList = this.props.publish_chat.map((marker, index) => {
+    const markerList = this.props.userMarker.map((marker, index) => {
        if (marker.latlon) {
           return (
             <MapView.Marker
               key={index}
               coordinate={marker.latlon}
-              title={`userId: ${marker.userId}`}
-              description={`message: ${marker.message}`}
+              title={`userId: ${marker.username}`}
+              description={`message: ${marker.lastMessage}`}
             >
             <MapView.Callout
               style={{ width: 160 }}
-              onPress={() => this.onPressCallout(marker.userId)}
+              onPress={() => this.onPressCallout(marker.userId, marker.username)}
             >
 
               <View>
-                <Text>{`userId: ${marker.userId}`}</Text>
-                <Text>{`message: ${marker.message}`}</Text>
+                <Text>{`userId: ${marker.username}`}</Text>
+                <Text>message:{ marker.lastMessage ? marker.lastMessage : '' }</Text>
               </View>
             </MapView.Callout>
             </MapView.Marker>
@@ -121,13 +122,15 @@ class MainMap extends Component {
     }
   };
 
-  const mapStateToProps = ({ message, Initial }) => {
-    const publish_chat = _.map(message.markerData, (data) => {
-      return { ...data };
+  const mapStateToProps = ({ Message, Initial }) => {
+    const userMarker = _.map(Message.markerData, (data, key) => {
+
+      return { ...data, userId: key };
     });
 
     const { region } = Initial;
-    return { message, region, publish_chat };
+    const message = Message;
+    return { message, region, userMarker };
   };
 
 export default connect(mapStateToProps)(MainMap);
