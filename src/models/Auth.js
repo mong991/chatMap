@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { Actions } from 'react-native-router-flux';
-import { signInWithEmailAndPassword, signOut } from '../services/Auth';
+import { signInWithEmailAndPassword, signOut, getUser } from '../services/Auth';
 
 const INITIAL_STATE = {
     user: null,
@@ -27,11 +27,13 @@ export default {
       return { ...state, loading: true, error: '' };
     },
     loginSuccess(state, action) {
-      Actions.main();
       return { ...state, ...INITIAL_STATE, user: action.payload };
     },
     loginFail(state) {
       return { ...state, error: 'Authentication Failed.', password: '', loading: false };
+    },
+    updateCurrentUser(state, action) {
+      return { ...state, user: action.payload };
     }
   },
   effects: {
@@ -48,6 +50,12 @@ export default {
     },
     * logoutUser({ payload }, { call }) {
       yield call(signOut);
+    },
+    * getUserInfo({ payload }, { call, put }) {
+      const user = yield call(getUser);
+      if (user) {
+        yield put({ type: 'updateCurrentUser', payload: user });
+      }
     }
 
   },

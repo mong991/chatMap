@@ -12,7 +12,7 @@ export function signInWithEmailAndPassword(email, password) {
         .then(user => {
           const name = _.split(email, '@', 2);
           firebase.database().ref(`/userInfo/${user.uid}`).set({
-            username: name[0],
+            userName: name[0],
             isOnline: 'ture'
           });
           return user;
@@ -41,18 +41,13 @@ export function updateLocation(region) {
   return null;
 }
 
-
-// export function doWatchList(callback) {
-//   const { currentUser } = firebase.auth();
-//   const ref = firebase.database().ref(`/users/${currentUser.uid}/employees`);
-
-//   const handler = (snapshot) => {
-//     callback(snapshot.val());
-//   };
-
-//   ref.on('value', handler);
-
-//   return () => {
-//     ref.off('value', handler);
-//   };
-// }
+export function getUser() {
+  const { currentUser } = firebase.auth();
+  const ref = firebase.database().ref(`/userInfo/${currentUser.uid}`)
+  return new Promise((resolve) => {
+   ref.once('value', snapshot => {
+      const user = snapshot.val();
+      resolve(user);
+    });
+  });
+}

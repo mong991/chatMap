@@ -10,12 +10,6 @@ const INITIAL_STATE = {
   error: '',
   loading: false,
   markerData: {},
-  region: {
-    latitude: 24.795258,
-    longitude: 120.996351,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421
-  },
 };
 
 export default {

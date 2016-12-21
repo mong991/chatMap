@@ -1,11 +1,45 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { View, TextInput, Text } from 'react-native';
+import { View, TextInput, Text, Image, TouchableOpacity } from 'react-native';
 import MapView from 'react-native-maps';
 import { connect } from 'dva/mobile';
 import { Button, Flex, List } from 'antd-mobile';
 
 class MainMap extends Component {
+
+  componentWillMount() {
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const newRegion = {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421
+          };
+          this.props.dispatch({
+              type: 'Initial/regionChanged',
+              payload: newRegion
+          });
+          console.log(newRegion);
+        },
+        (error) => alert(error.message),
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
+
+    this.watchID = navigator.geolocation.watchPosition((position) => {
+      const newRegion = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
+      };
+      console.log(newRegion);
+      this.props.dispatch({
+            type: 'Initial/setLocation',
+            payload: newRegion
+      });
+    });
+  }
 
   onTextareaChange(text) {
     this.props.dispatch({
@@ -26,10 +60,16 @@ class MainMap extends Component {
   }
 
   onPressCallout(chatUserId, chatUserName) {
-    console.log('onPressCallout');
     this.props.dispatch({
         type: 'Chat/privateChat',
         payload: { chatUserId, chatUserName }
+    });
+  }
+
+  onRegionChange(region) {
+    this.props.dispatch({
+        type: 'Initial/regionChanged',
+        payload: region
     });
   }
 
@@ -40,16 +80,15 @@ class MainMap extends Component {
             <MapView.Marker
               key={index}
               coordinate={marker.latlon}
-              title={`userId: ${marker.username}`}
+              title={`userId: ${marker.userName}`}
               description={`message: ${marker.lastMessage}`}
             >
             <MapView.Callout
               style={{ width: 160 }}
-              onPress={() => this.onPressCallout(marker.userId, marker.username)}
+              onPress={() => this.onPressCallout(marker.userId, marker.userName)}
             >
-
               <View>
-                <Text>{`userId: ${marker.username}`}</Text>
+                <Text>{`userId: ${marker.userName}`}</Text>
                 <Text>message:{ marker.lastMessage ? marker.lastMessage : '' }</Text>
               </View>
             </MapView.Callout>
@@ -80,6 +119,8 @@ class MainMap extends Component {
           style={{ flex: 9 }}
           initialRegion={this.props.region}
           showsUserLocation
+          onRegionChange={this.onRegionChange.bind(this)}
+          region={this.props.region}
         >
           {this.renderMarker()}
         </MapView>
@@ -119,6 +160,19 @@ class MainMap extends Component {
       fontSize: 18,
       paddingLeft: 10,
       paddingTop: 10
+    },
+    icon: {
+      width: 25,
+      height: 25,
+      backgroundColor: '#c6c0ae'
+    },
+    iconBorder: {
+      position: 'absolute',
+      width: 25,
+      height: 25,
+      top: 10,
+      left: 10,
+      zIndex: 10
     }
   };
 
@@ -129,6 +183,7 @@ class MainMap extends Component {
     });
 
     const { region } = Initial;
+    console.log(region);
     const message = Message;
     return { message, region, userMarker };
   };

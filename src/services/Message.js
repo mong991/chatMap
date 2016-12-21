@@ -94,15 +94,12 @@ export function creatChatRoom(user) {
 }
 
 export function savePrivateMsg(data) {
-
-  console.log(data);
   const { currentUser } = firebase.auth();
   const { msg, chatRoomKey } = data;
   const userId = currentUser.uid;
   const userName = _.split(currentUser.email, '@', 2);
   const time = new Date().getTime();
-   console.log(time);
-   console.log(chatRoomKey);
+
   const ref = firebase.database().ref(`/chatRoom/${chatRoomKey}/message`);
   const success = ref.push({
     userId,
@@ -113,17 +110,19 @@ export function savePrivateMsg(data) {
    return { success };
 }
 
-// export function doWatchList(callback) {
-//   const { currentUser } = firebase.auth();
-//   const ref = firebase.database().ref(`/users/${currentUser.uid}/employees`);
+export function doWatchChatList(callback, chatRoomId) {
+  //const { currentUser } = firebase.auth();
+  //const { chatRoomId } = chatData;
+console.log('doWatchChatList');
+  const ref = firebase.database().ref(`/chatRoom/${chatRoomId}/message`);
 
-//   const handler = (snapshot) => {
-//     callback(snapshot.val());
-//   };
+  const handler = (snapshot) => {
+    callback(snapshot.val());
+  };
 
-//   ref.on('value', handler);
+  ref.on('value', handler);
 
-//   return () => {
-//     ref.off('value', handler);
-//   };
-// }
+  return () => {
+    ref.off('value', handler);
+  };
+}

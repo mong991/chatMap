@@ -1,4 +1,5 @@
 import { Actions } from 'react-native-router-flux';
+import firebase from 'firebase';
 import {
   checkChatMember,
   savePrivateMsg,
@@ -10,7 +11,8 @@ const INITIAL_STATE = {
   chatError: '',
   chatLoading: false,
   chatRoomInfo: {},
-  privateMsgText: ''
+  privateMsgText: '',
+  chatMessage: {}
 };
 
 export default {
@@ -37,6 +39,9 @@ export default {
     },
     privateSendSuccess(state, action) {
       return { ...state, privateMsgText: '', loading: false, chatRoomInfo: action.payload };
+    },
+    updateChatMessage(state, action) {
+      return { ...state, chatMessage: action.payload };
     }
   },
   effects: {
@@ -78,7 +83,36 @@ export default {
       if (success) {
         yield put({ type: 'privateSendSuccess', payload: { chatUser, chatRoomKey } });
       }
+    },
+    * test({ payload }, { call, put }) {
+      console.log('OK!!!!', payload);
     }
   },
-  subscriptions: {}
+  subscriptions: {
+
+    fechChatMsg({ dispatch, history }) {
+      function onChatMessage(val) {
+        if (val !== null) {
+          const messages = val;
+          this.props.dispatch({
+            type: 'Chat/updateChatMessage',
+            payload: { messages }
+          });
+        }
+      }
+      // return history.listen(() => {
+      //   console.log('gogo');
+      // });
+
+
+      // console.log(Actions.currentRouter);
+      // firebase.auth().onAuthStateChanged((isLogin) => {
+      //   if (isLogin) {
+      //     getChatMsg((val) => {
+      //       dispatch({ type: 'markerFetchSuccess', payload: val });
+      //     });
+      //   }
+      // });
+    }
+  }
 };
