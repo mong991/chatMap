@@ -35,7 +35,7 @@ export function getMarkerList(callback) {
   };
 }
 
-export function getChatRoom(chatUser) {
+export function checkChatMember(chatUser) {
   const { currentUser } = firebase.auth();
   const { chatUserId } = chatUser;
   const ref = firebase.database().ref(`/chatMemberList/${currentUser.uid}/${chatUserId}`);
@@ -64,14 +64,14 @@ export function creatChatRoom(user) {
   const { currentUser } = firebase.auth();
   const userId = currentUser.uid;
   const name = _.split(currentUser.email, '@', 2);
-  const { chatUserId, chatName } = user;
+  const { chatUserId, chatUserName } = user;
 
   const ref = firebase.database().ref('/chatRoom');
   const chatList = firebase.database().ref('/chatMemberList/');
 
   const member = [
     { userId, userName: name[0] },
-    { userId: chatUserId, userName: chatName }
+    { userId: chatUserId, userName: chatUserName }
   ];
 
   const chatRoomId = ref.push({ member }).key;

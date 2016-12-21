@@ -25,11 +25,11 @@ class MainMap extends Component {
     });
   }
 
-  onPressCallout(userId, userName) {
+  onPressCallout(chatUserId, chatUserName) {
     console.log('onPressCallout');
     this.props.dispatch({
         type: 'Chat/privateChat',
-        payload: { userId, userName }
+        payload: { chatUserId, chatUserName }
     });
   }
 

@@ -1,6 +1,6 @@
 import { Actions } from 'react-native-router-flux';
 import {
-  getChatRoom,
+  checkChatMember,
   savePrivateMsg,
   creatChatRoom
 } from '../services/Message';
@@ -41,15 +41,13 @@ export default {
   },
   effects: {
     * privateChat({ payload }, { call, put }) {
-      console.log('privateChat');
-      const chatName = payload.userName;
-      const chatUserId = payload.userId;
+      const { chatUserName, chatUserId } = payload;
       const { currentUser } = yield call(getCurrentUser);
 
       if (currentUser.uid === chatUserId) {
         alert('不要跟自己聊天!!!!');
       } else {
-        const chatRoomInfo = yield call(getChatRoom, { chatUserId, chatName });
+        const chatRoomInfo = yield call(checkChatMember, { chatUserId, chatUserName });
 
         if (chatRoomInfo) {
           yield put({ type: 'getChatRoomSuccess', payload: chatRoomInfo });
@@ -57,7 +55,7 @@ export default {
           yield put({ type: 'getChatRoomFail' });
         }
 
-        Actions.chating({ title: chatName });
+        Actions.chating({ title: chatUserName });
       }
     },
     * sendPrivateMsg({ payload }, { call, put }) {
