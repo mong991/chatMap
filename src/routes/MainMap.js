@@ -47,14 +47,22 @@ class MainMap extends Component {
 
   renderMarker() {
     const markerList = this.props.userMarker.map((marker, index) => {
-       if (marker.latlon) {
-          return (
-            <MapView.Marker
-              key={index}
-              coordinate={marker.latlon}
-              title={`userId: ${marker.userName}`}
-              description={`message: ${marker.lastMessage}`}
-            >
+
+      if (marker.latlon) {
+        const profileImg = marker.img ? { uri: marker.img } : require('../img/default-profile.png');
+
+        return (
+          <MapView.Marker
+            key={index}
+            coordinate={marker.latlon}
+            title={`userId: ${marker.userName}`}
+            anchor={{ x: 0.5, y: 1.2 }}
+            centerOffset={{ x: 0.5, y: 1.2 }}
+          >
+            <Image
+              source={profileImg}
+              style={{ width: 35, height: 35 }}
+            />
             <MapView.Callout
               style={{ width: 160 }}
               onPress={() => this.onPressCallout(marker.userId, marker.userName)}
@@ -64,11 +72,11 @@ class MainMap extends Component {
                 <Text>message:{ marker.lastMessage ? marker.lastMessage : '' }</Text>
               </View>
             </MapView.Callout>
-            </MapView.Marker>
-          );
+          </MapView.Marker>
+        );
        }
-      });
-      return markerList;
+    });
+    return markerList;
   }
 
   // renderButton() {
@@ -140,14 +148,13 @@ class MainMap extends Component {
       paddingTop: 10
     },
     icon: {
-      width: 25,
-      height: 25,
-      backgroundColor: '#c6c0ae'
+      width: 30,
+      height: 30
     },
     iconBorder: {
       position: 'absolute',
-      width: 25,
-      height: 25,
+      width: 30,
+      height: 30,
       top: 10,
       left: 10,
       zIndex: 10
