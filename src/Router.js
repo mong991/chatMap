@@ -15,7 +15,12 @@ const RouterComponent = ({ dispatch }) => {
   }
 
   return (
-    <Router titleStyle={styles.titleStyle} passProps>
+    <Router
+      titleStyle={styles.titleStyle}
+      leftButtonIconStyle={{ tintColor: 'white' }}
+      rightButtonTextStyle={{ color: 'white' }}
+      passProps
+    >
       <Scene
       key="splash"
       component={Splash}
@@ -51,15 +56,12 @@ const RouterComponent = ({ dispatch }) => {
             rightTitle="Logout"
             component={MainMap}
             title="Chat Map"
-            leftButtonIconStyle={{ tintColor: 'white' }}
-            rightButtonTextStyle={{ color: 'white' }}
             type="replace"
           />
           <Scene
             key="chating"
             component={Chating}
             title=''
-            backButtonStyle={{ tintColor: 'white' }}
           />
         </Router>
       </Scene>
