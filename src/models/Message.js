@@ -1,5 +1,4 @@
 import firebase from 'firebase';
-import { Actions } from 'react-native-router-flux';
 import {
   sendMessage,
   getMarkerList,
@@ -44,6 +43,9 @@ export default {
     regionChanged(state, action) {
       return { ...state, region: action.payload };
     },
+    cleanMap(state) {
+      return { ...state, ...INITIAL_STATE };
+    }
   },
   effects: {
     * sendMessage({ payload }, { call, put }) {

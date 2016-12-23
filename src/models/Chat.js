@@ -42,6 +42,9 @@ export default {
     },
     updateChatMessage(state, action) {
       return { ...state, chatMessage: action.payload };
+    },
+    cleanChat(state) {
+      return { ...state, ...INITIAL_STATE };
     }
   },
   effects: {

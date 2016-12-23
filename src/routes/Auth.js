@@ -42,7 +42,7 @@ function Auth({ dispatch, auth }) {
     }
 
     return (
-      <Button type="primary" onClick={onButtonPress} style={{ margin: 10 }}>
+      <Button type="primary" onClick={onButtonPress} style={styles.buttonStyle}>
         Login
       </Button>
     );
@@ -91,6 +91,9 @@ const styles = {
     fontSize: 20,
     alignSelf: 'center',
     color: 'red'
+  },
+  buttonStyle: {
+    margin: 10
   }
 };
 
@@ -99,4 +102,3 @@ const mapStateToProps = ({ auth }) => {
 };
 
 export default connect(mapStateToProps)(Auth);
-

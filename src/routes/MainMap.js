@@ -4,8 +4,28 @@ import { View, TextInput, Text, Image, TouchableOpacity } from 'react-native';
 import MapView from 'react-native-maps';
 import { connect } from 'dva/mobile';
 import { Button, Flex, List } from 'antd-mobile';
+import { getMarkerList } from '../services/Message';
 
 class MainMap extends Component {
+
+  componentWillMount() {
+    this.undoWatchMarkerList = getMarkerList(this.onChatMessage.bind(this));
+  }
+
+  componentWillUnmount() {
+    this.undoWatchMarkerList();
+    this.props.dispatch({
+      type: 'Message/cleanMap'
+    });
+  }
+
+  onChatMessage(val) {
+    const makerList = val;
+    this.props.dispatch({
+      type: 'Message/markerFetchSuccess',
+      payload: { ...makerList }
+    });
+  }
 
   onTextareaChange(text) {
     this.props.dispatch({

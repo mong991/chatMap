@@ -10,7 +10,7 @@ class Chating extends Component {
   componentWillMount() {
     const { chatRoomKey } = this.props.Chat.chatRoomInfo;
     if (chatRoomKey) {
-      doWatchChatList(this.onChatMessage.bind(this), chatRoomKey);
+      this.undoWatchList = doWatchChatList(this.onChatMessage.bind(this), chatRoomKey);
     }
   }
 
@@ -19,8 +19,18 @@ class Chating extends Component {
     const nextChatRoomKey = nextProps.Chat.chatRoomInfo.chatRoomKey;
 
     if (chatRoomKey !== nextChatRoomKey && !chatRoomKey) {
-       doWatchChatList(this.onChatMessage.bind(this), chatRoomKey);
+       this.undoWatchList = doWatchChatList(this.onChatMessage.bind(this), chatRoomKey);
     }
+  }
+
+  componentWillUnmount() {
+    if (typeof (this.undoWatchList) === 'function') {
+      this.undoWatchList();
+    }
+
+    this.props.dispatch({
+      type: 'Chat/cleanChat'
+    });
   }
 
   onChatMessage(val) {
@@ -51,11 +61,12 @@ class Chating extends Component {
   }
 
   renderMessageList() {
-    console.log(this.props);
-    const { chatMessage } = this.props.Chat;
+    //console.log(this.props);
+    const { member, message } = this.props.Chat.chatMessage;
+    //console.log(member, message);
     const { userName } = this.props.CurrentUser;
     let justify = '';
-    const messageItem = _.map(chatMessage, (data, key) => {
+    const messageItem = _.map(message, (data, key) => {
       if (userName === data.userName) {
         justify = 'end';
       } else {

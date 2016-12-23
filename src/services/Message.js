@@ -69,10 +69,9 @@ export function creatChatRoom(user) {
   const ref = firebase.database().ref('/chatRoom');
   const chatList = firebase.database().ref('/chatMemberList/');
 
-  const member = [
-    { userId, userName: name[0] },
-    { userId: chatUserId, userName: chatUserName }
-  ];
+  const member = {};
+  member[userId] = { userId, userName: name[0] };
+  member[chatUserId] = { userId: chatUserId, userName: chatUserName };
 
   const chatRoomId = ref.push({ member }).key;
 
@@ -113,8 +112,7 @@ export function savePrivateMsg(data) {
 export function doWatchChatList(callback, chatRoomId) {
   //const { currentUser } = firebase.auth();
   //const { chatRoomId } = chatData;
-console.log('doWatchChatList');
-  const ref = firebase.database().ref(`/chatRoom/${chatRoomId}/message`);
+  const ref = firebase.database().ref(`/chatRoom/${chatRoomId}`);
 
   const handler = (snapshot) => {
     callback(snapshot.val());

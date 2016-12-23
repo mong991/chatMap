@@ -2,13 +2,10 @@ import firebase from 'firebase';
 import _ from 'lodash';
 
 export function signInWithEmailAndPassword(email, password) {
-  return (new Promise((resolve) => {
-    firebase.auth().signInWithEmailAndPassword(email, password)
-    .then((user) => {
-      return resolve({ user });
-    })
+  return firebase.auth().signInWithEmailAndPassword(email, password)
+    .then((user) => ({ user }))
     .catch(() => {
-     return firebase.auth().createUserWithEmailAndPassword(email, password)
+      return firebase.auth().createUserWithEmailAndPassword(email, password)
         .then(user => {
           const name = _.split(email, '@', 2);
           firebase.database().ref(`/userInfo/${user.uid}`).set({
@@ -19,7 +16,6 @@ export function signInWithEmailAndPassword(email, password) {
         })
         .catch((err) => ({ err }));
     });
-  }));
 }
 
 export function signOut() {
