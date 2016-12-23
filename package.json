@@ -16,6 +16,7 @@
     "react": "15.4.1",
     "react-dom": "^15.4.1",
     "react-native": "0.38.0",
+    "react-native-drawer": "^2.3.0",
     "react-native-maps": "^0.12.2",
     "react-native-router-flux": "^3.37.0"
   },

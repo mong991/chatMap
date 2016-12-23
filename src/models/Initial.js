@@ -62,9 +62,9 @@ export default {
           dispatch({
               type: 'auth/getUserInfo'
           });
-          Actions.main({ type: 'reset' });
+          Actions.drawer({ type: 'reset' });
         } else {
-          Actions.auth();
+          Actions.auth({ type: 'reset' });
         }
       });
      },

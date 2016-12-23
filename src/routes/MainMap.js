@@ -68,8 +68,8 @@ class MainMap extends Component {
               onPress={() => this.onPressCallout(marker.userId, marker.userName)}
             >
               <View>
-                <Text>{`userId: ${marker.userName}`}</Text>
-                <Text>message:{ marker.lastMessage ? marker.lastMessage : '' }</Text>
+                <Text style={styles.nameText} >{`${marker.userName}`}</Text>
+                <Text style={styles.msgText} >{ marker.lastMessage ? marker.lastMessage : '' }</Text>
               </View>
             </MapView.Callout>
           </MapView.Marker>
@@ -158,7 +158,14 @@ class MainMap extends Component {
       top: 10,
       left: 10,
       zIndex: 10
-    }
+    },
+    nameText: {
+      fontSize: 16,
+      fontWeight: 'bold',
+    },
+    msgText: {
+      fontSize: 14,
+    },
   };
 
   const mapStateToProps = ({ Message }) => {
