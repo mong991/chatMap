@@ -66,14 +66,15 @@ class MainMap extends Component {
   }
 
   renderMarker() {
+    const time = new Date().getTime();
     const markerList = this.props.userMarker.map((marker, index) => {
-
+      const key = `${index}-${time}`;
       if (marker.latlon) {
         const profileImg = marker.img ? { uri: marker.img } : require('../img/default-profile.png');
 
         return (
           <MapView.Marker
-            key={index}
+            key={key}
             coordinate={marker.latlon}
             title={`userId: ${marker.userName}`}
             anchor={{ x: 0.5, y: 1.2 }}
@@ -94,7 +95,8 @@ class MainMap extends Component {
             </MapView.Callout>
           </MapView.Marker>
         );
-       }
+      }
+      return null;
     });
     return markerList;
   }
@@ -190,7 +192,6 @@ class MainMap extends Component {
 
   const mapStateToProps = ({ Message }) => {
     const userMarker = _.map(Message.markerData, (data, key) => {
-
       return { ...data, userId: key };
     });
 
