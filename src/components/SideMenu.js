@@ -1,13 +1,13 @@
 import React from 'react';
-import { connect } from 'dva/mobile';
 import { Text, View, Image, Navigator, TouchableOpacity } from 'react-native';
+import { Actions } from 'react-native-router-flux';
 import { List } from 'antd-mobile';
 
 function onPressItem() {
   alert('onPressItem');
 }
 
-function SideMenu() {
+function SideMenu({ close }) {
   return (
     <View style={{ flex: 1 }}>
       <List
@@ -29,7 +29,7 @@ function SideMenu() {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.iconBorder} onPress={onPressItem}>
+        <TouchableOpacity style={styles.iconBorder} onPress={() => { close(); Actions.chatList(); }}>
           <Text style={styles.textStyle}>
             Chat List
           </Text>
@@ -67,5 +67,5 @@ const styles = {
   }
 };
 
-export default connect(null)(SideMenu);
+export default SideMenu;
 

@@ -28,7 +28,7 @@ export default class mydrawer extends Component {
                 onOpen={() => Actions.refresh({ key: state.key, open: true })}
                 onClose={() => Actions.refresh({ key: state.key, open: false })}
                 type="displace"
-                content={<SideMenu />}
+                content={<SideMenu close={this.closeControlPanel.bind(this)} />}
                 tapToClose
                 openDrawerOffset={0.4}
                 panCloseMask={0.4}

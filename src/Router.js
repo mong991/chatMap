@@ -8,6 +8,7 @@ import MainMap from './routes/MainMap';
 import Chating from './routes/Chating';
 import Splash from './components/Splash';
 import sideNav from './components/Navigator';
+import ChatList from './components/ChatList';
 
 const RouterComponent = ({ dispatch }) => {
   function onLogout() {
@@ -62,6 +63,11 @@ const RouterComponent = ({ dispatch }) => {
             key="chating"
             component={Chating}
             title=''
+          />
+          <Scene
+            key="chatList"
+            component={ChatList}
+            title='Chat List'
           />
         </Router>
       </Scene>

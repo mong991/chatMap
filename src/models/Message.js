@@ -31,8 +31,8 @@ export default {
       return { ...state, loading: true, error: '' };
     },
     sendSuccess(state) {
-      const markerData = state.markerData;
-      return { ...state, ...INITIAL_STATE, markerData };
+      const initialData = { messageText: '', error: '', loading: false };
+      return { ...state, ...initialData };
     },
     sendFail(state) {
       return { ...state, error: 'Send Failed.', loading: false };

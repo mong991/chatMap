@@ -124,3 +124,19 @@ export function doWatchChatList(callback, chatRoomId) {
     ref.off('value', handler);
   };
 }
+
+// export function doWatchChatMemberList(callback, chatRoomId) {
+//   const { currentUser } = firebase.auth();
+//   //const { chatRoomId } = chatData;
+//   const ref = firebase.database().ref(`/chatMemberList/${currentUser}`);
+
+//   const handler = (snapshot) => {
+//     callback(snapshot.val());
+//   };
+
+//   ref.on('value', handler);
+
+//   return () => {
+//     ref.off('value', handler);
+//   };
+// }

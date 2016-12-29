@@ -12,7 +12,8 @@ const INITIAL_STATE = {
   chatLoading: false,
   chatRoomInfo: {},
   privateMsgText: '',
-  chatMessage: {}
+  chatMessage: {},
+  chatMemberList: {}
 };
 
 export default {
@@ -45,6 +46,9 @@ export default {
     },
     cleanChat(state) {
       return { ...state, ...INITIAL_STATE };
+    },
+    listFetchSuccess(state, action) {
+      return { ...state, chatMemberList: action.payload };
     }
   },
   effects: {
