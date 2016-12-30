@@ -40,21 +40,16 @@ export function checkChatMember(chatUser) {
   const { chatUserId } = chatUser;
   const ref = firebase.database().ref(`/chatMemberList/${currentUser.uid}/${chatUserId}`);
 
+ console.log('checkChatMember');
   return new Promise((resolve, reject) => {
    ref.once('value', snapshot => {
-      const chatRoomKey = snapshot.val();
-      if (chatRoomKey) {
+      const isfriend = snapshot.val();
+      if (isfriend) {
+        const chatRoomKey = isfriend.chatRoomKey;
         resolve({ chatRoomKey, chatUser });
       } else {
+        ref.set(true);
         resolve({ chatUser });
-        // const chatRoomKey = ref.push(false).key;
-        // const { success, err } = creatChatRoom(chatRoomKey, chatuserId);
-
-        // if (success) {
-        //   resolve({ chatRoomKey, usedChatRoom: false, chatuserId });
-        // } else if (err) {
-        //   reject({ err });
-        // }
       }
     });
   });
@@ -66,30 +61,25 @@ export function creatChatRoom(user) {
   const name = _.split(currentUser.email, '@', 2);
   const { chatUserId, chatUserName } = user;
 
-  const ref = firebase.database().ref('/chatRoom');
-  const chatList = firebase.database().ref('/chatMemberList/');
-
   const member = {};
   member[userId] = { userId, userName: name[0] };
   member[chatUserId] = { userId: chatUserId, userName: chatUserName };
 
-  const chatRoomId = ref.push({ member }).key;
+  const chatRoomId = firebase.database().ref().child('chatRoom').push({ member }).key;
 
-  if (chatRoomId) {
-    return (
-      chatList.child(userId).child(chatUserId).set(chatRoomId: chatRoomId)
-        .then(() => {
-          return (
-            chatList.child(chatUserId).child(userId).set(chatRoomId: chatRoomId)
-              .then(() => ({ chatRoomId }))
-              .catch((err) => ({ err }))
-          );
-        })
-        .catch((err) => ({ err }))
-    );
-  }
+  const updates = {};
+  updates[`/${userId}/${chatUserId}`] = {
+    chatRoomKey: chatRoomId,
+    chatUserId
+  };
+  updates[`/${chatUserId}/${userId}`] = {
+    chatRoomKey: chatRoomId,
+    chatUserId: userId
+  };
 
-  return { err: 'error' };
+  return firebase.database().ref().child('chatMemberList').update(updates)
+          .then(() => ({ chatRoomId }))
+          .catch((err) => ({ err }));
 }
 
 export function savePrivateMsg(data) {
@@ -125,10 +115,10 @@ export function doWatchChatList(callback, chatRoomId) {
   };
 }
 
-// export function doWatchChatMemberList(callback, chatRoomId) {
+// export function doWatchChatMemberList(callback) {
 //   const { currentUser } = firebase.auth();
 //   //const { chatRoomId } = chatData;
-//   const ref = firebase.database().ref(`/chatMemberList/${currentUser}`);
+//   const ref = firebase.database().ref(`/chatMemberList/${currentUser.uid}`);
 
 //   const handler = (snapshot) => {
 //     callback(snapshot.val());

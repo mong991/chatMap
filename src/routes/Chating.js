@@ -15,11 +15,10 @@ class Chating extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const chatRoomKey = this.props.Chat.chatRoomInfo.chatRoomKey;
+    const { chatRoomKey } = this.props.Chat.chatRoomInfo;
     const nextChatRoomKey = nextProps.Chat.chatRoomInfo.chatRoomKey;
-
-    if (chatRoomKey !== nextChatRoomKey && !chatRoomKey) {
-       this.undoWatchList = doWatchChatList(this.onChatMessage.bind(this), chatRoomKey);
+    if ((chatRoomKey !== nextChatRoomKey) && nextChatRoomKey) {
+       this.undoWatchList = doWatchChatList(this.onChatMessage.bind(this), nextChatRoomKey);
     }
   }
 

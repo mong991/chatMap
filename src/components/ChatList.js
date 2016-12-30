@@ -1,27 +1,28 @@
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
 import { connect } from 'dva/mobile';
-//import { getChatList } from '../services/Message';
+import { doWatchChatMemberList } from '../services/Message';
 
 class ChatList extends Component {
 
-  // componentWillMount() {
-  //   //this.undoWatchMarkerList = getChatList(this.onChatList.bind(this));
-  // }
+  componentWillMount() {
+    this.undoWatchMarkerList = doWatchChatMemberList(this.onChatList.bind(this));
+  }
 
-  // onChatList(val) {
-  //   const chatList = val;
-  //   this.props.dispatch({
-  //     type: 'Chat/listFetchSuccess',
-  //     payload: { ...chatList }
-  //   });
-  // }
+  onChatList(val) {
+    const chatList = val;
+    console.log(chatList);
+    // this.props.dispatch({
+    //   type: 'Chat/listFetchSuccess',
+    //   payload: { ...chatList }
+    // });
+  }
 
   render() {
     return (
       <View style={styles.splashView}>
         <Text style={styles.splashText}>
-          sdfghjkl;''
+          test
         </Text>
       </View>
     );

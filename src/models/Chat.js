@@ -76,7 +76,6 @@ export default {
 
       if (!chatRoomKey) {
         const { chatRoomId, createdErr } = yield call(creatChatRoom, { ...chatUser });
-
         if (chatRoomId) {
           chatRoomKey = chatRoomId;
         } else if (createdErr) {
@@ -84,29 +83,15 @@ export default {
           return;
         }
       }
-      console.log(chatRoomKey);
+
       const success = yield call(savePrivateMsg, { chatRoomKey, msg });
-      console.log(success);
+
       if (success) {
         yield put({ type: 'privateSendSuccess', payload: { chatUser, chatRoomKey } });
       }
-    },
-    * test({ payload }, { call, put }) {
-      console.log('OK!!!!', payload);
     }
   },
   subscriptions: {
-
-    fechChatMsg({ dispatch, history }) {
-      function onChatMessage(val) {
-        if (val !== null) {
-          const messages = val;
-          this.props.dispatch({
-            type: 'Chat/updateChatMessage',
-            payload: { messages }
-          });
-        }
-      }
       // return history.listen(() => {
       //   console.log('gogo');
       // });
