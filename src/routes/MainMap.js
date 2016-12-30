@@ -45,10 +45,10 @@ class MainMap extends Component {
     });
   }
 
-  onPressCallout(chatUserId, chatUserName) {
+  onPressCallout(chatUserId, chatUserName, chatUserImg) {
     this.props.dispatch({
         type: 'Chat/privateChat',
-        payload: { chatUserId, chatUserName }
+        payload: { chatUserId, chatUserName, chatUserImg }
     });
   }
 
@@ -86,7 +86,7 @@ class MainMap extends Component {
             />
             <MapView.Callout
               style={{ width: 160 }}
-              onPress={() => this.onPressCallout(marker.userId, marker.userName)}
+              onPress={() => this.onPressCallout(marker.userId, marker.userName, marker.img)}
             >
               <View>
                 <Text style={styles.nameText} >{`${marker.userName}`}</Text>
@@ -187,6 +187,7 @@ class MainMap extends Component {
     },
     msgText: {
       fontSize: 14,
+      padding: 5
     },
   };
 

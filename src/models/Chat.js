@@ -12,8 +12,11 @@ const INITIAL_STATE = {
   chatLoading: false,
   chatRoomInfo: {},
   privateMsgText: '',
-  chatMessage: {},
-  chatMemberList: {}
+  chatMessage: {
+    message: {}
+  },
+  chatMemberList: {},
+
 };
 
 export default {
@@ -53,13 +56,14 @@ export default {
   },
   effects: {
     * privateChat({ payload }, { call, put }) {
+      //payload = { chatUserId, chatUserName, chatUserimg}
       const { chatUserName, chatUserId } = payload;
       const { currentUser } = yield call(getCurrentUser);
 
       if (currentUser.uid === chatUserId) {
         alert('不要跟自己聊天!!!!');
       } else {
-        const chatRoomInfo = yield call(checkChatMember, { chatUserId, chatUserName });
+        const chatRoomInfo = yield call(checkChatMember, { ...payload });
 
         if (chatRoomInfo) {
           yield put({ type: 'getChatRoomSuccess', payload: chatRoomInfo });
@@ -71,14 +75,16 @@ export default {
       }
     },
     * sendPrivateMsg({ payload }, { call, put }) {
-      //yield put({ type: 'showLoading' });
-      let { chatRoomKey, chatUser, msg } = payload;
+      //payload={ chatRoomKey, chatUser, msg }
+      let { chatRoomKey } = payload;
+      const { chatUser, msg } = payload;
 
       if (!chatRoomKey) {
-        const { chatRoomId, createdErr } = yield call(creatChatRoom, { ...chatUser });
+        const { chatRoomId, err } = yield call(creatChatRoom, { ...chatUser });
+        console.log(chatRoomId, err);
         if (chatRoomId) {
           chatRoomKey = chatRoomId;
-        } else if (createdErr) {
+        } else if (err) {
           yield put({ type: 'sendFail' });
           return;
         }
@@ -91,20 +97,5 @@ export default {
       }
     }
   },
-  subscriptions: {
-      // return history.listen(() => {
-      //   console.log('gogo');
-      // });
-
-
-      // console.log(Actions.currentRouter);
-      // firebase.auth().onAuthStateChanged((isLogin) => {
-      //   if (isLogin) {
-      //     getChatMsg((val) => {
-      //       dispatch({ type: 'markerFetchSuccess', payload: val });
-      //     });
-      //   }
-      // });
-    }
-  }
+  subscriptions: {}
 };

@@ -40,8 +40,7 @@ export function checkChatMember(chatUser) {
   const { chatUserId } = chatUser;
   const ref = firebase.database().ref(`/chatMemberList/${currentUser.uid}/${chatUserId}`);
 
- console.log('checkChatMember');
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
    ref.once('value', snapshot => {
       const isfriend = snapshot.val();
       if (isfriend) {
@@ -55,31 +54,43 @@ export function checkChatMember(chatUser) {
   });
 }
 
-export function creatChatRoom(user) {
+export function creatChatRoom(chatUser) {
   const { currentUser } = firebase.auth();
   const userId = currentUser.uid;
-  const name = _.split(currentUser.email, '@', 2);
-  const { chatUserId, chatUserName } = user;
+  console.log(chatUser);
+  return firebase.database().ref().child(`userInfo/${currentUser.uid}`).once('value')
+    .then((snapshot) => {
+      const { userName } = snapshot.val();
+      let { img } = snapshot.val();
+      const { chatUserId, chatUserName } = chatUser;
+      let { chatUserImg } = chatUser;
+      const member = {};
 
-  const member = {};
-  member[userId] = { userId, userName: name[0] };
-  member[chatUserId] = { userId: chatUserId, userName: chatUserName };
+      if (!img) {
+        img = false;
+      }
+      if (!chatUserImg) {
+        chatUserImg = false;
+      }
+      member[userId] = { userId, userName, userImg: img };
+      member[chatUserId] = { userId: chatUserId, userName: chatUserName, userImg: chatUserImg };
 
-  const chatRoomId = firebase.database().ref().child('chatRoom').push({ member }).key;
+      const chatRoomId = firebase.database().ref().child('chatRoom').push({ member }).key;
 
-  const updates = {};
-  updates[`/${userId}/${chatUserId}`] = {
-    chatRoomKey: chatRoomId,
-    chatUserId
-  };
-  updates[`/${chatUserId}/${userId}`] = {
-    chatRoomKey: chatRoomId,
-    chatUserId: userId
-  };
-
-  return firebase.database().ref().child('chatMemberList').update(updates)
-          .then(() => ({ chatRoomId }))
-          .catch((err) => ({ err }));
+      const updates = {};
+      updates[`/${userId}/${chatUserId}`] = {
+        chatRoomKey: chatRoomId,
+        chatUserId
+      };
+      updates[`/${chatUserId}/${userId}`] = {
+        chatRoomKey: chatRoomId,
+        chatUserId: userId
+      };
+      return firebase.database().ref().child('chatMemberList').update(updates)
+        .then(() => ({ chatRoomId }))
+        .catch((err) => ({ err }));
+    })
+    .catch((err) => ({ err }));
 }
 
 export function savePrivateMsg(data) {

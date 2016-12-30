@@ -1,10 +1,11 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { connect } from 'dva/mobile';
-import { Text, View, TextInput } from 'react-native';
+import { Text, View, TextInput, Image, Dimensions, ListView } from 'react-native';
 import { Button, Flex, List } from 'antd-mobile';
 import { doWatchChatList } from '../services/Message';
 
+const { height, width } = Dimensions.get('window');
 class Chating extends Component {
 
   componentWillMount() {
@@ -12,14 +13,19 @@ class Chating extends Component {
     if (chatRoomKey) {
       this.undoWatchList = doWatchChatList(this.onChatMessage.bind(this), chatRoomKey);
     }
+    const { message } = this.props.Chat.chatMessage;
+    this.createDataSource({ chatMessage: message });
   }
 
   componentWillReceiveProps(nextProps) {
+    //console.log(nextProps.Chat.chatRoomInfo.chatRoomKey);
     const { chatRoomKey } = this.props.Chat.chatRoomInfo;
     const nextChatRoomKey = nextProps.Chat.chatRoomInfo.chatRoomKey;
     if ((chatRoomKey !== nextChatRoomKey) && nextChatRoomKey) {
        this.undoWatchList = doWatchChatList(this.onChatMessage.bind(this), nextChatRoomKey);
     }
+    const { message } = nextProps.Chat.chatMessage;
+    this.createDataSource(message);
   }
 
   componentWillUnmount() {
@@ -59,27 +65,43 @@ class Chating extends Component {
     }
   }
 
-  renderMessageList() {
-    //console.log(this.props);
-    const { member, message } = this.props.Chat.chatMessage;
-    //console.log(member, message);
-    const { userName } = this.props.CurrentUser;
-    let justify = '';
-    const messageItem = _.map(message, (data, key) => {
-      if (userName === data.userName) {
+  createDataSource(chatMessage) {
+    const ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2
+    });
+    this.dataSource = ds.cloneWithRows(chatMessage);
+  }
+
+  renderMessageList(chatMessage) {
+    if (chatMessage.userId) {
+      const { member } = this.props.Chat.chatMessage;
+      const { userName } = this.props.CurrentUser;
+      let justify = '';
+
+      if (userName === chatMessage.userName) {
         justify = 'end';
       } else {
         justify = 'start';
       }
 
+      const userImg = member[chatMessage.userId].userImg ? { uri: member[chatMessage.userId].userImg } : require('../img/default-profile.png');
+      const key = new Date().getTime();
       return (
-        <Flex key={key} style={styles.chatMessageItem} justify={justify}>
-          <Text key='{key}+name'>{data.userName}:</Text>
-          <Text key='{key}+msg' style={styles.msgText} >{data.msg}</Text>
+        <Flex key={key} style={styles.chatMessageItem} justify={justify} align="start">
+          <Image
+            style={{ height: 35, width: 35, borderRadius: 15 }}
+            source={userImg}
+          />
+          <View style={{ marginLeft: 5, maxWidth: width * 0.6 }}>
+            <Text key='{key}+name' style={{ fontSize: 12 }}>{chatMessage.userName}</Text>
+            <View style={{ backgroundColor: '#ffe4b5', borderRadius: 10, marginTop: 5 }}>
+              <Text key='{key}+msg' style={styles.msgText} >{chatMessage.msg}</Text>
+            </View>
+          </View>
         </Flex>
       );
-    });
-    return messageItem;
+    }
+    return;
   }
 
   render() {
@@ -87,9 +109,11 @@ class Chating extends Component {
     return (
         <View style={{ flex: 1 }}>
           <View style={{ flex: 9 }}>
-            <List>
-              {this.renderMessageList()}
-            </List>
+            <ListView
+              enableEmptySections
+              dataSource={this.dataSource}
+              renderRow={this.renderMessageList.bind(this)}
+            />
           </View>
           <View style={{ flex: 1 }}>
             <List>
@@ -127,11 +151,12 @@ const styles = {
     paddingTop: 10
   },
   chatMessageItem: {
-    marginTop: 5,
+    marginLeft: 5,
+    marginRight: 5,
     padding: 2
   },
   msgText: {
-    padding: 5
+    padding: 10
   }
 };
 
