@@ -22,10 +22,10 @@ export default {
   },
   effects: {
     * setLocation({ payload }, { select, call, put }) {
-        const user = yield select(state => state.Initial.user);
-        if (user) {
+        //const user = yield select(state => state.Initial.user);
+        //if (user) {
           yield call(updateLocation, { ...payload });
-        }
+        //}
 
         yield put({
           type: 'geoRegionChanged',
@@ -58,7 +58,7 @@ export default {
             });
           },
           (error) => alert(error.message),
-          { enableHighAccuracy: true, timeout: 20000, maximumAge: 10 }
+          { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
       );
 
       firebase.auth().onAuthStateChanged((isLogin) => {

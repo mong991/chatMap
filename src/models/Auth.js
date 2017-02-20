@@ -45,8 +45,7 @@ export default {
 
       if (user) {
         const region = yield select(state => state.Initial.geoRegion);
-        let aa = yield call(updateLocation, region);
-        console.log(aa);
+        yield call(updateLocation, region);
         yield put({ type: 'loginSuccess', payload: user });
       } else if (err) {
         yield put({ type: 'loginFail' });

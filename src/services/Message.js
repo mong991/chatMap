@@ -37,7 +37,8 @@ export function getMarkerList(callback) {
 
 export function checkChatMember(chatUser) {
   const { currentUser } = firebase.auth();
-  const { chatUserId } = chatUser;
+  const { chatUserId, chatUserName } = chatUser;
+  let { chatUserImg } = chatUser;
   const ref = firebase.database().ref(`/chatMemberList/${currentUser.uid}/${chatUserId}`);
 
   return new Promise((resolve) => {
@@ -47,7 +48,10 @@ export function checkChatMember(chatUser) {
         const chatRoomKey = isfriend.chatRoomKey;
         resolve({ chatRoomKey, chatUser });
       } else {
-        ref.set(true);
+        if (!chatUserImg) {
+          chatUserImg = false;
+        }
+        ref.set({ chatUserName, chatUserImg });
         resolve({ chatUser });
       }
     });
@@ -80,11 +84,13 @@ export function creatChatRoom(chatUser) {
       const updates = {};
       updates[`/${userId}/${chatUserId}`] = {
         chatRoomKey: chatRoomId,
-        chatUserId
+        chatUserId,
+        chatUserName
       };
       updates[`/${chatUserId}/${userId}`] = {
         chatRoomKey: chatRoomId,
-        chatUserId: userId
+        chatUserId: userId,
+        chatUserName: userName
       };
       return firebase.database().ref().child('chatMemberList').update(updates)
         .then(() => ({ chatRoomId }))
@@ -126,18 +132,18 @@ export function doWatchChatList(callback, chatRoomId) {
   };
 }
 
-// export function doWatchChatMemberList(callback) {
-//   const { currentUser } = firebase.auth();
-//   //const { chatRoomId } = chatData;
-//   const ref = firebase.database().ref(`/chatMemberList/${currentUser.uid}`);
+export function doWatchChatMemberList(callback) {
+  const { currentUser } = firebase.auth();
+  //const { chatRoomId } = chatData;
+  const ref = firebase.database().ref(`/chatMemberList/${currentUser.uid}`);
 
-//   const handler = (snapshot) => {
-//     callback(snapshot.val());
-//   };
+  const handler = (snapshot) => {
+    callback(snapshot.val());
+  };
 
-//   ref.on('value', handler);
+  ref.on('value', handler);
 
-//   return () => {
-//     ref.off('value', handler);
-//   };
-// }
+  return () => {
+    ref.off('value', handler);
+  };
+}
