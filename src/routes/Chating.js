@@ -85,6 +85,7 @@ class Chating extends Component {
       }
 
       const userImg = member[chatMessage.userId].userImg ? { uri: member[chatMessage.userId].userImg } : require('../img/default-profile.png');
+
       const key = new Date().getTime();
       return (
         <Flex key={key} style={styles.chatMessageItem} justify={justify} align="start">
@@ -101,7 +102,7 @@ class Chating extends Component {
         </Flex>
       );
     }
-    return;
+    return (<Flex />);
   }
 
   render() {

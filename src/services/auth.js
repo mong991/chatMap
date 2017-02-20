@@ -8,11 +8,11 @@ export function signInWithEmailAndPassword(email, password) {
       return firebase.auth().createUserWithEmailAndPassword(email, password)
         .then(user => {
           const name = _.split(email, '@', 2);
-          firebase.database().ref(`/userInfo/${user.uid}`).set({
+          firebase.database().ref(`/userInfo/${user.uid}`).update({
             userName: name[0],
             isOnline: 'ture'
           });
-          return user;
+          return { user };
         })
         .catch((err) => ({ err }));
     });

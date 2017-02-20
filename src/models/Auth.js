@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { Actions } from 'react-native-router-flux';
-import { signInWithEmailAndPassword, signOut, getUser } from '../services/Auth';
+import { signInWithEmailAndPassword, signOut, getUser, updateLocation } from '../services/Auth';
 
 const INITIAL_STATE = {
     user: null,
@@ -37,12 +37,16 @@ export default {
     }
   },
   effects: {
-    * loginUser({ payload }, { call, put }) {
+    * loginUser({ payload }, { select, call, put }) {
       yield put({ type: 'showLoading' });
       const { email, password } = payload;
       const { user, err } = yield call(signInWithEmailAndPassword, email, password);
+        console.log('login');
 
       if (user) {
+        const region = yield select(state => state.Initial.geoRegion);
+        let aa = yield call(updateLocation, region);
+        console.log(aa);
         yield put({ type: 'loginSuccess', payload: user });
       } else if (err) {
         yield put({ type: 'loginFail' });
