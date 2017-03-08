@@ -2,12 +2,18 @@ import React from 'react';
 import { Text, View, Image, Navigator, TouchableOpacity } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { List } from 'antd-mobile';
+import { connect } from 'dva/mobile';
 
-function onPressItem() {
-  alert('onPressItem');
-}
 
-function SideMenu({ close }) {
+const SideMenu = ({ dispatch, close }) => {
+  function onPressItem() {
+    alert('coming soon');
+  }
+
+  function onLogout() {
+    dispatch({ type: 'auth/logoutUser' });
+  }
+
   return (
     <View style={{ flex: 1 }}>
       <List
@@ -35,7 +41,7 @@ function SideMenu({ close }) {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.iconBorder} onPress={onPressItem}>
+        <TouchableOpacity style={styles.iconBorder} onPress={onLogout}>
           <Text style={styles.textStyle}>
             Logout
           </Text>
@@ -44,7 +50,7 @@ function SideMenu({ close }) {
       </List>
     </View>
   );
-}
+};
 
 const styles = {
   textStyle: {
@@ -67,5 +73,5 @@ const styles = {
   }
 };
 
-export default SideMenu;
+export default connect()(SideMenu);
 

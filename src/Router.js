@@ -10,11 +10,7 @@ import Splash from './components/Splash';
 import sideNav from './components/Navigator';
 import ChatList from './components/ChatList';
 
-const RouterComponent = ({ dispatch }) => {
-  function onLogout() {
-    dispatch({ type: 'auth/logoutUser' });
-  }
-
+const RouterComponent = () => {
   return (
     <Router
       titleStyle={styles.titleStyle}
@@ -53,8 +49,6 @@ const RouterComponent = ({ dispatch }) => {
         >
           <Scene
             key="map"
-            onRight={onLogout}
-            rightTitle="Logout"
             component={MainMap}
             title="Chat Map"
             type="replace"
