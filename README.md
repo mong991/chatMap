@@ -17,10 +17,11 @@ This project can :
 #Feature
 
 * online/offline display
-* User location and message record list
+* User publish chat history
 * User image upload
 
 #Demo
+![alt text](https://github.com/mong991/chatMap/blob/master/demo/demo.gif "chatMap demo")
 
 
 
@@ -31,7 +32,8 @@ This project can :
 4. react-native-router-flux
 5. Google firebase
 6. lodash
-7. react-native-maps(android)
+7. react-native-maps
+8. react-native-drawer
 
 #Usage
 
