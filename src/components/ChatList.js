@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Text, View, ListView, Image } from 'react-native';
+import { Text, View, ListView, Image, TouchableOpacity } from 'react-native';
 import { connect } from 'dva/mobile';
 import { Flex, List } from 'antd-mobile';
+import { Actions } from 'react-native-router-flux';
 import { doWatchChatMemberList } from '../services/Message';
 
 class ChatList extends Component {
@@ -17,14 +18,6 @@ class ChatList extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-  //   const { chatMemberList } = this.props;
-  //   const nextChatMemberList = nextProps.chatMemberList;
-  //   if ((chatMemberList !== nextChatMemberList) && nextChatMemberList) {
-  //      this.undoWatchList = doWatchChatMemberList(this.onChatList.bind(this), nextChatMemberList);
-  //   }
-  //  // const { chatMemberList } = nextProps.Chat;
-  console.log('next');
-   console.log(nextProps);
     this.createDataSource(nextProps.chatMemberList);
   }
 
@@ -53,20 +46,26 @@ class ChatList extends Component {
     this.dataSource = ds.cloneWithRows(chatList);
   }
 
+  onPressChatMember(chatUserId, chatUserName, chatUserImg) {
+    this.props.dispatch({
+      type: 'Chat/privateChat',
+        payload: { chatUserId, chatUserName, chatUserImg }
+    });
+  }
+
   renderMessageList(chatList) {
     if (chatList.chatUserName) {
-      console.log(chatList.chatUserName);
       const userImg = chatList.chatUserImg ? { uri: chatList.chatUserImg } : require('../img/default-profile.png');
       return (
-        <Flex style={styles.chatListItem}>
-           <Image
-            style={{ height: 35, width: 35, borderRadius: 15 }}
-            source={userImg}
-          />
-          <View style={{ marginLeft: 5 }}>
-            <Text style={{ fontSize: 24 }}>{chatList.chatUserName}</Text>
+        <TouchableOpacity onPress={() => { this.onPressChatMember(chatList.chatUserId, chatList.chatUserName, userImg) }}>
+          <View style={styles.chatListItem}>
+            <Image
+              style={{ height: 35, width: 35, borderRadius: 15 }}
+              source={userImg}
+            />
+            <Text style={{ marginLeft: 5, fontSize: 24 }}>{chatList.chatUserName}</Text>
           </View>
-        </Flex>
+        </TouchableOpacity>
       );
     }
     return (<View />);
@@ -74,7 +73,7 @@ class ChatList extends Component {
 
   render() {
     return (
-      <View style={styles.splashView}>
+      <View style={styles.view}>
         <ListView
               enableEmptySections
               dataSource={this.dataSource}
@@ -87,15 +86,16 @@ class ChatList extends Component {
 }
 
 const styles = {
-  splashView: {
-    flex: 1,
-    justifyContent: 'center'
+  view: {
+    flex: 1
   },
   chatListItem: {
     marginLeft: 5,
     marginRight: 5,
-    padding: 10
+    padding: 10,
+    flexDirection: 'row'
   },
+
 };
 
 const mapStateToProps = ({ Chat }) => {

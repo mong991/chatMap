@@ -48,7 +48,7 @@ export default {
       return { ...state, chatMessage: action.payload };
     },
     cleanChat(state) {
-      return { ...state, ...INITIAL_STATE };
+      return { ...state, ...INITIAL_STATE, chatMemberList: state.chatMemberList };
     },
     listFetchSuccess(state, action) {
       return { ...state, chatMemberList: action.payload };

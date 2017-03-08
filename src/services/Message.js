@@ -85,12 +85,14 @@ export function creatChatRoom(chatUser) {
       updates[`/${userId}/${chatUserId}`] = {
         chatRoomKey: chatRoomId,
         chatUserId,
-        chatUserName
+        chatUserName,
+        chatUserImg
       };
       updates[`/${chatUserId}/${userId}`] = {
         chatRoomKey: chatRoomId,
         chatUserId: userId,
-        chatUserName: userName
+        chatUserName: userName,
+        chatUserImg: img
       };
       return firebase.database().ref().child('chatMemberList').update(updates)
         .then(() => ({ chatRoomId }))
