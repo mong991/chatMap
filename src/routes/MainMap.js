@@ -127,6 +127,7 @@ class MainMap extends Component {
           style={{ flex: 9 }}
           initialRegion={this.props.region}
           showsUserLocation
+          showsMyLocationButton={false}
           onRegionChange={this.onRegionChange.bind(this)}
           region={this.props.region}
         >
