@@ -87,7 +87,7 @@ export default {
           });
         },
         (error) => alert(error.message),
-        { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 100 }
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000, distanceFilter: 10 }
       );
     }
   }

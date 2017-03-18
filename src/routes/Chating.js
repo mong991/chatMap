@@ -112,8 +112,18 @@ class Chating extends Component {
           <View style={{ flex: 9 }}>
             <ListView
               enableEmptySections
+              ref={(listView) => { this.listView = listView; }}
               dataSource={this.dataSource}
               renderRow={this.renderMessageList.bind(this)}
+              onLayout={(event) => {
+                this.listViewHeight = event.nativeEvent.layout.height;
+              }}
+              onContentSizeChange={() => {
+                this.listView.scrollTo({
+                  y: this.listView.getMetrics().contentLength - this.listViewHeight,
+                  animated: false
+                });
+              }}
             />
           </View>
           <View style={{ flex: 1 }}>
