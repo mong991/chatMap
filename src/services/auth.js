@@ -39,7 +39,7 @@ export function updateLocation(region) {
 
 export function getUser() {
   const { currentUser } = firebase.auth();
-  const ref = firebase.database().ref(`/userInfo/${currentUser.uid}`)
+  const ref = firebase.database().ref(`/userInfo/${currentUser.uid}`);
   return new Promise((resolve) => {
    ref.once('value', snapshot => {
       const user = snapshot.val();
