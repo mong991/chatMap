@@ -128,7 +128,7 @@ class MainMap extends Component {
           initialRegion={this.props.region}
           showsUserLocation
           showsMyLocationButton={false}
-          onRegionChange={this.onRegionChange.bind(this)}
+          onRegionChangeComplete={this.onRegionChange.bind(this)}
           region={this.props.region}
         >
           {this.renderMarker()}
@@ -179,7 +179,7 @@ class MainMap extends Component {
       width: 30,
       height: 30,
       top: 10,
-      left: 10,
+      right: 10,
       zIndex: 10
     },
     nameText: {
